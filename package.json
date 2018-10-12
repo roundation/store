@@ -6,6 +6,10 @@
   "repository": "https://github.com/roundation/store.git",
   "author": "Zheeeng <hi@zheeeng.me>",
   "license": "MIT",
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "rm -rf dist && tsc --sourceMap false"
+  },
   "devDependencies": {
     "@types/react": "^16.4.16",
     "tslint": "^5.11.0",
