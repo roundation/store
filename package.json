@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "prepublish": "npm run build",
-    "build": "rm -rf dist && tsc --sourceMap false"
+    "build": "rm -rf dist && tsc"
   },
   "devDependencies": {
     "@types/react": "^16.4.16",
