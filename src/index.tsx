@@ -2,7 +2,7 @@ import * as React from 'react'
 import { Omit } from './types'
 
 export type WithContext<C, N extends string = 'context'> = {
-  [k in N]: C | null
+  [k in N]: C
 }
 
 export type ExtractContext<S> = S extends {
@@ -10,7 +10,7 @@ export type ExtractContext<S> = S extends {
 } ? R : unknown
 
 export default function createStore <C> (creator: (setState: React.Component['setState']) => C) {
-  const Context = React.createContext<C | null>(null)
+  const Context = React.createContext<C>(null as any)
 
   const Provider = class Provider extends React.Component<{}, C> {
     state = creator(this.setState.bind(this))
