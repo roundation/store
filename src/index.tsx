@@ -22,11 +22,13 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
       this.state = state
     }
 
-    render () {
-      const context = Object.assign({} as C, this.state, this.effects)
+    get context (): C {
+      return Object.assign({} as C, this.state, this.effects)
+    }
 
+    render () {
       return (
-        <Context.Provider value={context}>
+        <Context.Provider value={this.context}>
           {this.props.children}
         </Context.Provider>
       )
