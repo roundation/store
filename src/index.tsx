@@ -1,19 +1,34 @@
-import * as React from 'react'
-import { Omit, OmitType } from './types'
+import * as React from 'react';
+import { separateStateAndEffects } from './helpers';
+import { Omit, OmitByType, PickByType } from './types';
 
 export type WithContext<C, N extends string = 'context'> = {
   [k in N]: C extends { Consumer: React.ComponentType<React.ConsumerProps<infer R>> } ? R : unknown
 }
 
-export default function createStore <C> (creator: (setState: React.Component<{}, OmitType<C, Function>>['setState']) => C) {
+export type SafeSetState<S> = React.Component<{}, OmitByType<S, Function>>['setState']
+
+export default function createStore <C> (creator: (setState: SafeSetState<C>) => C) {
   const Context = React.createContext<C>(null as any)
 
-  const Provider = class Provider extends React.Component<{}, C> {
-    state = creator(this.setState.bind(this))
+  const Provider = class Provider extends React.Component<{}, OmitByType<C, Function>> {
+    effects!: PickByType<C, Function>
+
+    constructor (props: {}) {
+      super(props)
+      const mixedStateAndEffects = creator(this.setState.bind(this))
+      const { effects, state } = separateStateAndEffects(mixedStateAndEffects)
+      this.effects = effects
+      this.state = state
+    }
 
     render () {
+      const context = Object.assign({} as C, this.state, this.effects)
+
       return (
-        <Context.Provider value={this.state}>{this.props.children}</Context.Provider>
+        <Context.Provider value={context}>
+          {this.props.children}
+        </Context.Provider>
       )
     }
   }
