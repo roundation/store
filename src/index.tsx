@@ -2,12 +2,8 @@ import * as React from 'react'
 import { Omit, OmitType } from './types'
 
 export type WithContext<C, N extends string = 'context'> = {
-  [k in N]: C
+  [k in N]: C extends { Consumer: React.ComponentType<React.ConsumerProps<infer R>> } ? R : unknown
 }
-
-export type ExtractContext<S> = S extends {
-  Consumer: React.ComponentType<React.ConsumerProps<infer R>>,
-} ? R : unknown
 
 export default function createStore <C> (creator: (setState: React.Component<{}, OmitType<C, Function>>['setState']) => C) {
   const Context = React.createContext<C>(null as any)
