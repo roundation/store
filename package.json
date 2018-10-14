@@ -1,6 +1,6 @@
 {
   "name": "@roundation/store",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "description": "😄😄😄A light weight fractal state management / services providing solution. 😄😄😄",
   "main": "dist/index.js",
   "repository": "https://github.com/roundation/store.git",
