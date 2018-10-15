@@ -6,15 +6,20 @@ export type WithContext<C, N extends string = 'context'> = {
   [k in N]: C extends { Consumer: React.ComponentType<React.ConsumerProps<infer R>> } ? R : unknown
 }
 
+export type ProviderProps<C> = {
+  consume: true
+  children: (context: C) => React.ReactNode
+} | { consume?: false }
+
 export type SafeSetState<S> = React.Component<{}, OmitByType<S, Function>>['setState']
 
 export default function createStore <C> (creator: (setState: SafeSetState<C>) => C) {
   const Context = React.createContext<C>(null as any)
 
-  const Provider = class Provider extends React.Component<{}, OmitByType<C, Function>> {
+  const Provider = class Provider extends React.Component<ProviderProps<C>, OmitByType<C, Function>> {
     effects!: PickByType<C, Function>
 
-    constructor (props: {}) {
+    constructor (props: ProviderProps<C>) {
       super(props)
       const mixedStateAndEffects = creator(this.setState.bind(this))
       const { effects, state } = separateStateAndEffects(mixedStateAndEffects)
@@ -27,9 +32,23 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
     }
 
     render () {
+      const { children } = this.props
+
+      if (!children) return null
+
+      if (this.props.consume === true && React.Children.count(children) === 1 && typeof children === 'function') {
+        return (
+          <Context.Provider value={this.context}>
+            <Context.Consumer>
+              {children as (context: C) => React.ReactNode}
+            </Context.Consumer>
+          </Context.Provider>
+        )
+      }
+
       return (
         <Context.Provider value={this.context}>
-          {this.props.children}
+          {children}
         </Context.Provider>
       )
     }
