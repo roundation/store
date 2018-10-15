@@ -8,7 +8,7 @@ export type WithContext<C, N extends string = 'context'> = {
 }
 
 export type ProviderProps<C> = XOR<
-  { consume: true, children: (context: C) => React.ReactNode }, { consume?: false, children: React.ReactNode }
+  { consumeImmediate: true, children: (context: C) => React.ReactNode }, { consumeImmediate?: false, children: React.ReactNode }
 >
 
 export type SafeSetState<S> = React.Component<{}, OmitByType<S, Function>>['setState']
@@ -36,7 +36,7 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
 
       if (!children) return null
 
-      if (this.props.consume === true && React.Children.count(children) === 1 && isFunction(children)) {
+      if (this.props.consumeImmediate === true && React.Children.count(children) === 1 && isFunction(children)) {
         return (
           <Context.Provider value={this.context}>
             <Context.Consumer>
