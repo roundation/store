@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { separateStateAndEffects } from './helpers';
+import { isFunction } from './utils'
 import { Omit, OmitByType, PickByType } from './types';
 
 export type WithContext<C, N extends string = 'context'> = {
@@ -36,11 +37,11 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
 
       if (!children) return null
 
-      if (this.props.consume === true && React.Children.count(children) === 1 && typeof children === 'function') {
+      if (this.props.consume === true && React.Children.count(children) === 1 && isFunction(children)) {
         return (
           <Context.Provider value={this.context}>
             <Context.Consumer>
-              {children as (context: C) => React.ReactNode}
+              {children}
             </Context.Consumer>
           </Context.Provider>
         )
