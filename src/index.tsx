@@ -1,16 +1,15 @@
 import * as React from 'react';
 import { separateStateAndEffects } from './helpers';
 import { isFunction } from './utils'
-import { Omit, OmitByType, PickByType } from './types';
+import { Omit, OmitByType, PickByType, XOR } from './types';
 
 export type WithContext<C, N extends string = 'context'> = {
   [k in N]: C extends { Consumer: React.ComponentType<React.ConsumerProps<infer R>> } ? R : unknown
 }
 
-export type ProviderProps<C> = {
-  consume: true
-  children: (context: C) => React.ReactNode
-} | { consume?: false }
+export type ProviderProps<C> = XOR<
+  { consume: true, children: (context: C) => React.ReactNode }, { consume?: false, children: React.ReactNode }
+>
 
 export type SafeSetState<S> = React.Component<{}, OmitByType<S, Function>>['setState']
 
