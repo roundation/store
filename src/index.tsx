@@ -27,7 +27,7 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
       this.state = state
     }
 
-    get context (): C {
+    get value (): C {
       return Object.assign({} as C, this.state, this.effects)
     }
 
@@ -38,7 +38,7 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
 
       if (this.props.consumeImmediate === true && React.Children.count(children) === 1 && isFunction(children)) {
         return (
-          <Context.Provider value={this.context}>
+          <Context.Provider value={this.value}>
             <Context.Consumer>
               {children}
             </Context.Consumer>
@@ -47,7 +47,7 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
       }
 
       return (
-        <Context.Provider value={this.context}>
+        <Context.Provider value={this.value}>
           {children}
         </Context.Provider>
       )
