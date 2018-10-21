@@ -74,7 +74,7 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
     const contextName = ctxName || 'context' as N
 
     return class ComponentInjectedContext extends React.Component<Omit<P, N>> {
-      static displayName = `Injected${contextName}(${Wrapped.displayName || Wrapped.name || 'Component'})`
+      static displayName = `Injected(${contextName})(${Wrapped.displayName || Wrapped.name || 'Component'})`
 
       render () {
         return (
