@@ -90,5 +90,5 @@ export default function createStore <C> (creator: (setState: SafeSetState<C>) =>
 
   const Consumer = Context.Consumer
 
-  return { Provider, Consumer, inject, connect }
+  return { Provider, Consumer, Context, inject, connect }
 }
